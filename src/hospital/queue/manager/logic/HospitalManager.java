@@ -37,6 +37,10 @@ public class HospitalManager {
         doctors.add(new Doctor("Dr. Sinha", "Ophthalmology"));
         doctors.add(new Doctor("Dr. Fernandes", "Dentistry"));
         doctors.add(new Doctor("Dr. Bhatt", "Dentistry"));
+        doctors.add(new Doctor("Dr. Mehta", "Gynecology"));
+        doctors.add(new Doctor("Dr. Naik", "Gynecology"));
+        doctors.add(new Doctor("Dr. Shetty", "Pediatrics"));
+        doctors.add(new Doctor("Dr. Iyer", "Pediatrics"));
     }
 
     public static synchronized HospitalManager getInstance() {
