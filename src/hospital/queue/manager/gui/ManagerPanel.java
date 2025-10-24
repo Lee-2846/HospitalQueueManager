@@ -106,14 +106,13 @@ public class ManagerPanel extends JPanel {
             });
         }
 
-        DefaultTableModel model = new DefaultTableModel(colNames, 0) {
+        DefaultTableModel model = new DefaultTableModel(colNames, 0){
             @Override
-            public boolean isCellEditable(int row, int col) { return false; }
+            public boolean isCellEditable(int row, int col){return false;}
         };
         for (Object[] row : rows) model.addRow(row);
         doctorTable.setModel(model);
 
-        // Custom renderer for group headers & "Busy" coloring
         doctorTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -121,7 +120,6 @@ public class ManagerPanel extends JPanel {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 String nameCell = table.getValueAt(row, 0).toString();
 
-                // Department header row
                 if (!nameCell.startsWith("Dr.")) {
                     c.setFont(c.getFont().deriveFont(Font.BOLD, 15f));
                     c.setBackground(new Color(235, 240, 255));
@@ -129,23 +127,19 @@ public class ManagerPanel extends JPanel {
                     return c;
                 }
 
-                // Red color for "Busy" in Availability column
                 if (column == 1 && "Busy".equals(value)) {
                     c.setForeground(Color.RED);
                     c.setFont(table.getFont().deriveFont(Font.BOLD));
                 } else {
                     c.setFont(table.getFont());
-                    c.setForeground(isSelected
-                        ? table.getSelectionForeground()
-                        : table.getForeground());
+                    c.setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
                 }
 
-                c.setBackground(isSelected
-                    ? table.getSelectionBackground()
-                    : table.getBackground());
+                c.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
 
                 return c;
             }
         });
     }
 }
+

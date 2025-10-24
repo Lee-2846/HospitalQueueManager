@@ -91,11 +91,16 @@ public class PatientPanel extends JPanel {
 
         add(inputPanel, BorderLayout.SOUTH);
 
-        String[] columnNames = {"Queue #", "Patient Name", "Department", "Problem", "Status", "Assigned Doctor", "Wait Time", "Emergency"};
-        tableModel = new DefaultTableModel(columnNames, 0);
+        String[] columnNames = {"Queue #", "Patient Name", "Contact", "Department", "Problem", "Status", "Assigned Doctor", "Wait Time", "Emergency"};
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make cells non-editable
+            }
+        };
         queueTable = new JTable(tableModel);
         styleTable(queueTable);
-        queueTable.getColumnModel().getColumn(7).setCellRenderer(new DefaultTableCellRenderer() {
+        queueTable.getColumnModel().getColumn(8).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
                                                           boolean isSelected, boolean hasFocus, int row, int column) {
@@ -112,6 +117,7 @@ public class PatientPanel extends JPanel {
         });
 
         add(new JScrollPane(queueTable), BorderLayout.CENTER);
+
         bookBtn.addActionListener(e -> addNewPatient());
 
         updateQueueTable();
@@ -149,7 +155,13 @@ public class PatientPanel extends JPanel {
             return;
         }
 
+        if (!contact.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(this, "Contact number must be exactly 10 digits.");
+            return;
+        }
+
         LinkedList<Patient> queue = hospitalManager.getDepartmentQueues().get(department);
+
         int queuePosition = 0;
         for (Patient p : queue) {
             if (!"Done".equals(p.getStatus())) {
@@ -170,8 +182,8 @@ public class PatientPanel extends JPanel {
         hospitalManager.bookAppointment(patient);
 
         JOptionPane.showMessageDialog(this,
-                "You are in position #" + (patientsAhead + 1) + ".\nPatients ahead: " + patientsAhead +
-                        "\nEstimated wait time: " + waitTime + " minutes."
+            "You are in position #" + (patientsAhead + 1) + ".\nPatients ahead: " + patientsAhead +
+                "\nEstimated wait time: " + waitTime + " minutes."
         );
 
         updateQueueTable();
@@ -207,14 +219,15 @@ public class PatientPanel extends JPanel {
             }
 
             tableModel.addRow(new Object[]{
-                    queueNumber++,
-                    p.getName(),
-                    p.getDepartment(),
-                    p.getProblem(),
-                    p.getStatus(),
-                    p.getAssignedDoctor(),
-                    waitTimeStr,
-                    p.isEmergency() ? "Yes" : "No"
+                queueNumber++,
+                p.getName(),
+                p.getContact(),
+                p.getDepartment(),
+                p.getProblem(),
+                p.getStatus(),
+                p.getAssignedDoctor(),
+                waitTimeStr,
+                p.isEmergency() ? "Yes" : "No"
             });
         }
     }
